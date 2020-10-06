@@ -91,13 +91,9 @@ static void init_nvs()
     ESP_ERROR_CHECK(ret);
 }
 
-void app_main()
+void init_connect()
 {
-    printf("\n --- init_nvs() --- \n\v");
-    init_nvs();
-
-    printf("Inicializando cliente WiFi/HTTP...\n");
-
+    ESP_ERROR_CHECK(esp_netif_init()); //Inicializa a pilha TCP/IP e retorna ESP_OK ou ESP_FAIL
     tcpip_adapter_init();
     ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
     wifi_init_config_t config = WIFI_INIT_CONFIG_DEFAULT();
@@ -114,4 +110,13 @@ void app_main()
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &sta_config));
     ESP_ERROR_CHECK(esp_wifi_start());
     ESP_ERROR_CHECK(esp_wifi_connect());
+}
+
+void app_main()
+{
+    printf("\n --- init_nvs() --- \n\v");
+    init_nvs();
+
+    printf("Inicializando cliente WiFi/HTTP...\n");
+    init_connect();
 }
