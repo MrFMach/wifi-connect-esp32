@@ -7,8 +7,8 @@
 #include "lwip/sockets.h"
 #include "nvs_flash.h"
 
-#define SSID "Yahweh_2.4G"
-#define SSID_PASS "f@b100000"
+#define SSID "wifi ssid"
+#define SSID_PASS "wifi password"
 
 #define HTTP_SERVER_IP "93.184.216.34" // example.com
 #define HTTP_SERVER_PORT 80
@@ -26,7 +26,7 @@ esp_err_t event_handler(void *ctx, system_event_t *event)
     if (event->event_id == SYSTEM_EVENT_STA_GOT_IP)
     {
 
-        printf("IP recebido do AccessPoint = %d.%d.%d.%d \n", IP2STR(&event->event_info.got_ip.ip_info.ip));
+        printf("\n --- IP access point received = %d.%d.%d.%d \n", IP2STR(&event->event_info.got_ip.ip_info.ip));
         requestHTTP();
     }
     return ESP_OK;
@@ -47,27 +47,27 @@ void requestHTTP()
     sock = lwip_socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
     {
-        printf("sock < 0 - FATAL!!!\n");
+        printf("\n --- Sock < 0 - FATAL!!!\n");
         esp_restart();
     }
 
     ret = lwip_connect(sock, (struct sockaddr *)&addr, sizeof(addr));
     if (ret != 0)
     {
-        printf("connect != 0 - FATAL!!!\n");
+        printf("\n --- Connect != 0 - FATAL!!!\n");
         esp_restart();
     }
 
-    printf("Enviando requisicao HTTP...\n");
+    printf("\n --- Sending request HTTP...\n");
     lwip_send(sock, REQUEST_MESSAGE, strlen(REQUEST_MESSAGE), 0);
 
     char recvbuf[1024] = {0};
 
     while ((ret = lwip_recv(sock, recvbuf, 1024, 0)) > 0)
     {
-        printf("bytes recebidos: %d\n", ret);
+        printf("\n --- Bytes received: %d\n", ret);
         recvbuf[ret] = 0;
-        printf("conteudo recebido: %s\n", recvbuf);
+        printf("\n --- Content received: %s\n", recvbuf);
     }
 
     lwip_close(sock);
@@ -117,6 +117,6 @@ void app_main()
     printf("\n --- init_nvs() --- \n\v");
     init_nvs();
 
-    printf("Inicializando cliente WiFi/HTTP...\n");
+    printf("\n --- init WiFi/HTTP --- \n\v");
     init_connect();
 }
